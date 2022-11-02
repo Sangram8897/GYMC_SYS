@@ -8,6 +8,8 @@ import Profile from '../containers/profile'
 import App from '../../App'
 import Main from './navigation/app_stack'
 
+
+
 const Start = () => {
     return (
         <Provider store={store}>
