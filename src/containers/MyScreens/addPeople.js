@@ -4,16 +4,20 @@ import { useDispatch } from 'react-redux';
 import { ColorThemeContext } from '../../context/theme_context';
 import { Container, DatePicker, Header, Button } from 'components'
 import InputScrollView from 'react-native-input-scroll-view';
-import ScreenA from './ScreenA';
+import ScreenA from '../demo screens/ScreenA';
+
 import firestore from '@react-native-firebase/firestore';
 import ACTIONS from '../../store/actions';
-import AddPeople from '../MyScreens/addPeople';
+import AddPeople from './addPeople';
+import { Screen } from 'react-native-screens';
+import ScreenB from './ScreenB';
+import FloatingActionButton from '../../components/FloatingActionButton';
 
-export const StateContext = React.createContext();
-const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+export const StateContext2 = React.createContext();
+const FORM_INPUT_UPDATE2 = 'FORM_INPUT_UPDATE2';
 
-const formReducer = (state, action) => {
-    if (action.type === FORM_INPUT_UPDATE) {
+const formReducer2 = (state, action) => {
+    if (action.type === FORM_INPUT_UPDATE2) {
         const updatedValues = {
             ...state.inputValues,
             [action.input]: action.value,
@@ -66,49 +70,52 @@ const inintialState = {
     formIsValid: false
 }
 
-const AddItem = ({ navigation }) => {
+const AddItem2 = ({ navigation }) => {
     const dispatch = useDispatch();
-    const [formState, dispatchFormState] = useReducer(formReducer, inintialState);
+    const [formState2, dispatchFormState2] = useReducer(formReducer2, inintialState);
     const { Colors, ToggleTheme } = useContext(ColorThemeContext);
 
-    const inputChangeHandler = useCallback(
+
+    const inputChangeHandler2 = useCallback(
         (inputIdentifier, inputValue, inputValidity) => {
-            dispatchFormState({
-                type: FORM_INPUT_UPDATE,
+            dispatchFormState2({
+                type: FORM_INPUT_UPDATE2,
                 value: inputValue,
                 isValid: inputValidity,
-                input: inputIdentifier 
+                input: inputIdentifier
             })
-        }, [dispatchFormState]);
+        }, [dispatchFormState2]);
 
     const onSubmit = async () => {
         Keyboard.dismiss()
         await firestore()
-        .collection('Users')
-        .add({
-            name: formState.inputValues.name,
-            start_date:formState.inputValues.start_date,
-            amount:formState.inputValues.amount,
-            address:formState.inputValues.address,
-            category:'soft',
-            type:'NORMAL',
-            maxCapacity:50000,
-            minCapacity:1000,
-            dependant:true,
-            isTaken:null,
-            source:'direct',
-            mobile_number_primary:formState.inputValues.mobile_number_primary,
-        })
-        .then(() => {
-          console.log('User added!');
-        });
+            .collection('Users')
+            .add({
+                name: formState2.inputValues.name,
+                start_date: formState2.inputValues.start_date,
+                amount: formState2.inputValues.amount,
+                address: formState2.inputValues.address,
+                category: 'soft',
+                type: 'NORMAL',
+                maxCapacity: 50000,
+                minCapacity: 1000,
+                dependant: true,
+                isTaken: null,
+                source: 'direct',
+                mobile_number_primary: formState2.inputValues.mobile_number_primary,
+            })
+            .then(() => {
+                console.log('User added!');
+            });
         await dispatch(ACTIONS.get_members_list())
         navigation.goBack()
         return
+
+
     }
 
     return (
-        <StateContext.Provider value={{ state: formState, dispatch: inputChangeHandler }}>
+        <StateContext2.Provider value={{ state: formState2, dispatch: inputChangeHandler2 }}>
             <Container>
                 <Header
                     showBackButton={true}
@@ -118,16 +125,19 @@ const AddItem = ({ navigation }) => {
                 />
                 <View style={{ flex: 1, marginTop: 20 }}>
                     <InputScrollView>
-        
-                     <ScreenA/>
+
+                        <ScreenB />
 
                     </InputScrollView>
                 </View>
+       
 
                 <View style={{ width: '100%', flexDirection: 'row' }}>
+                   
                     <View style={{ flex: 1 }}>
                         <Button
-                            onPress={onSubmit}
+                            onPress={() => navigation.navigate('AddItem2')}
+
                             label={'RESET'}
                             textColor={Colors.COLOR_PINK}
                             backgroundColor={Colors.COLOR_BLACK}
@@ -145,10 +155,10 @@ const AddItem = ({ navigation }) => {
                     </View>
                 </View>
             </Container>
-        </StateContext.Provider>
+        </StateContext2.Provider>
     )
 }
 
-export default AddItem
+export default AddItem2
 
 const styles = StyleSheet.create({})

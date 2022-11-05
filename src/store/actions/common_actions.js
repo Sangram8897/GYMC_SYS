@@ -13,7 +13,7 @@ export const get_members_list = (subject_id) => async dispatch => {
                 await querySnapshot.forEach(documentSnapshot => {
                     let data = documentSnapshot.data();
                     data.id = documentSnapshot.id;
-                    members_list.push(data);
+                    members_list.push(data); 
                 });
                 dispatch({ type: 'MEMBERS_LIST_SUCCESS', payload: members_list });
             });

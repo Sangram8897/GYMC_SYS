@@ -9,7 +9,7 @@ function ColorThemeProvider({ children }) {
         else setColors(Themes.lightTheme)
     }
 
-    const value = useMemo(
+    const value = useMemo( 
         () => ({
             Colors,
             ToggleTheme,

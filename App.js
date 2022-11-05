@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ColorThemeProvider, { ColorThemeContext } from './src/context/theme_context';
 import { Provider } from 'react-redux';
 import AddItem from './src/containers/demo screens/addItem';
+import people from './src/containers/MyScreens/people';
 {/* <IonIcon name="C" size={16} color="blue"></IonIcon> */ }
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -32,6 +33,9 @@ function App() {
             }
             else if (route.name === 'AddItem') {
               iconName = focused ? 'add-outline' : 'add';
+            }
+            else if (route.name === 'People') {
+              iconName = focused ? 'people-circle-outline' : 'people-circle';
             }
 
             // You can return any component that you like here!
@@ -66,6 +70,18 @@ function App() {
               backgroundColor: theme.Colors.COLOR_CARD,
             },
           }} />
+          <Tab.Screen name='People' component={people}
+          options={{
+            title:'Users',
+            headerTitleStyle: {
+              color: theme.Colors.COLOR_FONT,
+              fontFamily: 'Montserrat-Medium'
+            },
+            headerStyle: {
+              backgroundColor: theme.Colors.COLOR_CARD,
+            },
+          }}
+          />
         <Tab.Screen name="AddItem" component={AddItem}
           options={{
             title: 'Dashboard',

@@ -63,7 +63,7 @@ const Input = (props) => {
         dispatch({ type: INPUT_BLUR })
     }
     return (
-        <View style={{ margin: 10 }}>
+        <View style={{ margin: 10 }}> 
             {!IsEmpty(props.labal) && <Text style={[{ fontSize: 14, color: Theme.COLOR_TYPE_5, marginLeft: 5, marginBottom: 5, fontFamily: 'Montserrat-SemiBold' }, labelStyle]}>{props.labal}</Text>}
             <TextInput
                 {...props}

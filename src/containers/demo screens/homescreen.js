@@ -80,7 +80,7 @@ const Homescreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.Colors.COLOR_BACKGROUND }]}>
-      <FlatList
+      <FlatList 
         data={members_list}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}

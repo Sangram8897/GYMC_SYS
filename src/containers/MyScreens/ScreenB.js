@@ -2,12 +2,12 @@ import React, { useContext, useCallback } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { Container, Input, Header, Button, DatePicker } from 'components'
-import { StateContext } from './addItem'
-import { StateContext2 } from '../MyScreens/addPeople'
+import { StateContext } from '../demo screens/addItem'
+import { StateContext2 } from './addPeople'
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
-const ScreenA = () => {
-    const stateContext = useContext(StateContext)
+const ScreenB = () => {
+    const stateContext = useContext(StateContext2)
     
     return (
         <View>
@@ -60,5 +60,5 @@ const ScreenA = () => {
         </View>
     )
 }
-export default ScreenA
+export default ScreenB
 const styles = StyleSheet.create({})
