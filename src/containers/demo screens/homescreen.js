@@ -20,8 +20,6 @@ const Item = ({ item, title, mobile_number, deleteItem }) => {
       });
   }
 
-
-
   return (<TouchableOpacity style={[styles.item]}>
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <View style={{ height: 61, width: 61, borderRadius: 30, overflow: 'hidden', zIndex: 999, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.Colors.COLOR_BACKGROUND }}>
@@ -38,8 +36,8 @@ const Item = ({ item, title, mobile_number, deleteItem }) => {
         </View>
 
         <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
-          <Text style={[styles.sub_title, { color: theme.Colors.COLOR_FONT }]}>Mob : {mobile_number}</Text>
-          <Text style={[styles.sub_title, { color: theme.Colors.COLOR_FONT }]}>Addre : {`Pimpali Chiplun`}</Text>
+          <Text style={[styles.sub_title, { color: theme.Colors.COLOR_FONT }]}>Mob : {item.mobile_number_primary}</Text>
+          <Text style={[styles.sub_title, { color: theme.Colors.COLOR_FONT }]}>Addre : {item.address}</Text>
         </View>
       </View>
 

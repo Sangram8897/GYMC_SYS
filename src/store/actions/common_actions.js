@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 export const get_members_list = (subject_id) => async dispatch => {
     try {
         firestore()
-            .collection('Users')
+            .collection('MYDATA')
             // .doc(subject_id)
             // .collection("modules")
             .get()

@@ -14,6 +14,7 @@ const ScreenA = () => {
                 onDateChange={(current_date) => stateContext.dispatch('start_date', current_date, true)}
 
             />
+
             <Input
                 id='name'
                 labal='User Name'
@@ -23,7 +24,16 @@ const ScreenA = () => {
                 onInputChange={stateContext.dispatch}
                 required
             />
-           
+            <Input
+                id='periodInDays'
+                labal='Period in Days'
+                errorText='Wrong Title'
+                initialValue={''}
+                initialValid={true}
+                onInputChange={stateContext.dispatch}
+                required
+            />
+
             <Input
                 id='amount'
                 labal='Amount'

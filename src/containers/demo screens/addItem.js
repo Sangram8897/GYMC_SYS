@@ -37,6 +37,7 @@ const inintialState = {
     inputValues: {
         name: 'Sundar kumar',
         start_date: '',
+        periodInDays:0,
         address: '',
         amount: 3000,
         category: 'soft',
@@ -48,6 +49,7 @@ const inintialState = {
     },
     inputValidities: {
         name: false,
+        periodInDays:false,
         address: false,
         start_date: false,
         amount: false,
@@ -83,10 +85,11 @@ const AddItem = ({ navigation }) => {
     const onSubmit = async () => {
         Keyboard.dismiss()
         await firestore()
-        .collection('Users')
+        .collection('MYDATA')
         .add({
             name: formState.inputValues.name,
             start_date:formState.inputValues.start_date,
+            periodInDays:formState.inputValues.periodInDays,
             amount:formState.inputValues.amount,
             address:formState.inputValues.address,
             category:'soft',
