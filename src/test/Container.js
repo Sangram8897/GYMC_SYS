@@ -3,6 +3,8 @@ import { View, SafeAreaView, StyleSheet, ActivityIndicator, StatusBar } from 're
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useTheme } from '@Theme'
 
+
+
 const Container = (props) => {
   const netInfo = useNetInfo();
   const { Layout, Gutters, Colors, Fonts, Common, DualThemeColors } = useTheme()
