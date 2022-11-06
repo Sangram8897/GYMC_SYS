@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import { View, Switch, StyleSheet } from "react-native";
 import { ColorThemeContext } from "../../context/theme_context";
 import Themes from "../../style/AppThemeColors";
+
+
 //import CircularProgress from 'react-native-circular-progress-indicator';
 
 const Profile = () => {
