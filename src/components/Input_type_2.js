@@ -23,7 +23,7 @@ const inputReducer = (state, action) => {
     }
 }
 
-const Input = (props) => {
+const InputType2 = (props) => {
     const Theme = useContext(ColorThemeContext).Colors;
     const [inputState, dispatch] = useReducer(inputReducer, {
         value: props.initialValue ? props.initialValue : '',
@@ -63,11 +63,11 @@ const Input = (props) => {
         dispatch({ type: INPUT_BLUR })
     }
     return (
-        <View style={{ margin: 5 }}>
+        <View style={{ margin: 10 }}>
             {!IsEmpty(props.labal) && <Text style={[{ fontSize: 14, color: Theme.COLOR_TYPE_5, marginLeft: 5, marginBottom: 5, fontFamily: 'Montserrat-SemiBold' }, labelStyle]}>{props.labal}</Text>}
             <TextInput
                 {...props}
-                style={[styles.textInput, { color: Theme.COLOR_GRAY_DARK, backgroundColor: Theme.COLOR_WHITE, minHeight: props.minHeight }]}
+                style={[styles.textInput, { color: Theme.COLOR_TYPE_8, backgroundColor: Theme.COLOR_TYPE_2, minHeight: props.minHeight }]}
                 value={inputState.value}
                 onChangeText={(text) => textChangeHandler(text)}
                 onBlur={lostFocusHandler}
@@ -82,7 +82,7 @@ const Input = (props) => {
     )
 }
 
-export default Input
+export default InputType2
 
 const styles = StyleSheet.create({
     textInput: {
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 0,
-        borderRadius: 6,
+        borderRadius: 4,
         elevation: 1
     },
 })

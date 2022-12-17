@@ -18,7 +18,7 @@ const Header = ({
         <View style={{
             height: 50,
             width: '100%',
-            backgroundColor: Theme.COLOR_BACKGROUND,
+            backgroundColor: Theme.COLOR_CARD,
             // borderBottomWidth: 1,
             zIndex: 1000,
             justifyContent: 'space-between',

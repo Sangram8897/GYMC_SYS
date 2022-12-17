@@ -22,18 +22,19 @@ export default function Button({
     <TouchableOpacity
       onPress={onPress}
       style={[{
+         width:'90%',
 
-        width: '100%',
+        // width: '100%',
         alignSelf: 'center',
         paddingVertical: 15,
-
+        marginVertical:8,
         borderWidth: borderWidth,
         borderColor: borderColor,
         overflow: 'hidden',
         backgroundColor: backgroundColor,
         justifyContent: 'center',
         alignItems: 'center',
-        // borderRadius: 3,
+        borderRadius: 3,
       }, style]}
     >
 

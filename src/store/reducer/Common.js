@@ -1,6 +1,7 @@
 const initialState = {
     loading: false,
     members_list: [],
+    packages_list:[]
 };
 const MembersListReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -13,6 +14,12 @@ const MembersListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 members_list: action.payload,
+                loading: false,
+            };
+            case 'PACKAGE_LIST_SUCCESS':
+            return {
+                ...state,
+                packages_list: action.payload,
                 loading: false,
             };
         default:

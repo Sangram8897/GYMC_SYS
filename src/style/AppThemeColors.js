@@ -2,7 +2,7 @@ const Themes = {
     lightTheme: {
         //light theme colors
         COLOR_THEME: 'light',
-        COLOR_PRIMARY: 'blue',
+       // COLOR_PRIMARY: 'blue',
         COLOR_BACKGROUND: '#E3E3E3',
         COLOR_CARD: '#FAFAFA',
         COLOR_FONT:'#1c1e21',
@@ -18,7 +18,7 @@ const Themes = {
         COLOR_BLACK_TRANSP: 'rgba(0, 0, 0, 0.7)',
         COLOR_GREY_TRANSP: 'rgba(67, 85, 85, 0.7)',
 
-    //     COLOR_PRIMARY: '#00E3BA',
+        COLOR_PRIMARY: '#00E3BA',
     // COLOR_BACKGROUND: '#FAFAFA',
     COLOR_BORDER: '#E5E5E5',
     COLOR_SHADOW: '#E5E5E5',

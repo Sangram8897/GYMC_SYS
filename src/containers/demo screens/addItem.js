@@ -7,6 +7,7 @@ import InputScrollView from 'react-native-input-scroll-view';
 import ScreenA from './ScreenA';
 import firestore from '@react-native-firebase/firestore';
 import ACTIONS from '../../store/actions';
+import moment from 'moment';
 
 export const StateContext = React.createContext();
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
@@ -37,32 +38,14 @@ const inintialState = {
     inputValues: {
         name: 'Sundar kumar',
         start_date: '',
-        periodInDays:0,
         address: '',
-        amount: 3000,
-        category: 'soft',
-        type: 'NORMAL',
-        dependant: true,
-        isTaken: null,
-        source: 'direct',
         mobile_number_primary: '9021010551',
     },
     inputValidities: {
         name: false,
-        periodInDays:false,
         address: false,
         start_date: false,
-        amount: false,
-        category: false,
-        type: false,
-        dependant: false,
-        isTaken: false,
-        source: false,
         mobile_number_primary: false,
-
-        title: false,
-        short_desc: false,
-        description: false
     },
     formIsValid: false
 }
@@ -83,30 +66,26 @@ const AddItem = ({ navigation }) => {
         }, [dispatchFormState]);
 
     const onSubmit = async () => {
+        console.log('formState',formState)
         Keyboard.dismiss()
+        let member_id;
         await firestore()
-        .collection('MYDATA')
+        .collection('Members')
         .add({
             name: formState.inputValues.name,
-            start_date:formState.inputValues.start_date,
-            periodInDays:formState.inputValues.periodInDays,
-            amount:formState.inputValues.amount,
             address:formState.inputValues.address,
-            category:'soft',
-            type:'NORMAL',
-            maxCapacity:50000,
-            minCapacity:1000,
-            dependant:true,
-            isTaken:null,
-            source:'direct',
             mobile_number_primary:formState.inputValues.mobile_number_primary,
+            is_package_selected: false,
         })
-        .then(() => {
-          console.log('User added!');
+        .then(async(querySnapshot) => {
+            const currentRef =await JSON.parse(JSON.stringify(querySnapshot._documentPath._parts));
+            member_id=await currentRef[1]
         });
-        await dispatch(ACTIONS.get_members_list())
-        navigation.goBack()
-        return
+        navigation.navigate('SelectPackage', { member_id :member_id})
+        //  
+        // await dispatch(ACTIONS.get_members_list())
+        // navigation.goBack()
+        // return
     }
 
     return (
@@ -118,7 +97,7 @@ const AddItem = ({ navigation }) => {
                     showPlusButton={true}
                     onPlusButtonPress={() => ToggleTheme()}
                 />
-                <View style={{ flex: 1, marginTop: 20 }}>
+                <View style={{ flex: 1, margin: 12 }}>
                     <InputScrollView>
         
                         <ScreenA />
@@ -126,25 +105,16 @@ const AddItem = ({ navigation }) => {
                     </InputScrollView>
                 </View>
 
-                <View style={{ width: '100%', flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
+                <View style={{ width: '100%', flexDirection: 'row',justifyContent:'center',alignItems:'center' }}>
+                   
                         <Button
                             onPress={onSubmit}
-                            label={'RESET'}
-                            textColor={Colors.COLOR_PINK}
-                            backgroundColor={Colors.COLOR_BLACK}
-                            // borderColor={Colors.COLOR_INACTIVE}
-                            borderWidth={0} />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <Button
-                            onPress={onSubmit}
-                            label={'SAVE'}
+                            label={'SAVE & CONTINUE'}
                             textColor={Colors.COLOR_WHITE}
                             backgroundColor={Colors.COLOR_PINK}
                             borderColor={Colors.COLOR_INACTIVE}
                             borderWidth={0} />
-                    </View>
+                    
                 </View>
             </Container>
         </StateContext.Provider>
