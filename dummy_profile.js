@@ -9,21 +9,45 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import BarChart from "../../components/BarChart";
 import moment from "moment";
 import { extendMoment } from 'moment-range';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import IsEmpty from "../../utils/IsEmpty";
 import firestore from '@react-native-firebase/firestore';
+import SingleSelectionDropdown from "../../components/single_selection_dropdown";
+import ACTIONS from "../../store/actions";
 
-const moment43 = extendMoment(moment);
 
-const _months = [
-  { month: 1, days_sch: 0 }, { month: 2, days_sch: 0 }, { month: 3, days_sch: 0 },
-  { month: 4, days_sch: 0 }, { month: 5, days_sch: 0 }, { month: 6, days_sch: 0 },
-  { month: 7, days_sch: 0 }, { month: 8, days_sch: 0 }, { month: 9, days_sch: 0 },
-  { month: 10, days_sch: 0 }, { month: 11, days_sch: 0 }, { month: 12, days_sch: 0 },
+const _months3 = [
+  {
+    "package_image_url": "https://firebasestorage.googleapis.com/v0/b/gymc-d2bf7.appspot.com/o/2899b391-58a6-4bb5-8a6f-afba5a107cd2.jpg?alt=media&token=5aca157f-1078-47d2-9d22-9afb09112236",
+    "name": "Weight Gain",
+    "id": "UoROHvBJ5JgO9mzmdoqu",
+    "value": "Weight Gain",
+    "count": 1
+  },
+  {
+    "package_image_url": "https://firebasestorage.googleapis.com/v0/b/gymc-d2bf7.appspot.com/o/cd38b550-231c-4c4f-90c3-67490fb3fdf9.jpg?alt=media&token=714d13e1-5623-4e47-b2c0-90d3692def8b",
+    "name": "Weight Loss",
+    "id": "mCkgLfE7n60MVGjFr0pT",
+    "value": "Weight Loss",
+    "count": 1
+  },
+  {
+    "package_image_url": null,
+    "name": "Personal Training",
+    "id": "vZyyAAsJ20PhhaXVorU8",
+    "value": "Personal Training",
+    "count": 1
+  }
 ]
-//let dummy_months_ = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0 }
+const _graph_values = {
+  data: [],
+  max: 0,
+  recommended: 0,
+  title: ''
+}
 
 const Profile = () => {
+  const dispatch = useDispatch();
   const [isEnabled, setIsEnabled] = useState(false);
   const theme = useContext(ColorThemeContext)
   const members_list = useSelector(state => state.MembersListReducer.members_list);
@@ -31,7 +55,20 @@ const Profile = () => {
   const [packages_list, set_packages_list] = useState([])
   const [packages_graph_values, set_packages_graph_values] = useState([])
 
+  const [selected_package, set_selected_package] = useState(null)
+  const [graph_values, set_graph_values] = useState(_graph_values)
+
   console.log('ccc packages_list', packages_list)
+  useEffect(() => {
+    if (selected_package) {
+      if (selected_package.name == 'Weight Gain') {
+        asyncFunction()
+      } else {
+        asyncFunction2()
+      }
+      console.log('kklp', selected_package)
+    }
+  }, [selected_package])
 
   useEffect(() => {
     get_packages_list()
@@ -60,74 +97,37 @@ const Profile = () => {
       console.log(err)
     }
   }
-  
-  useEffect(() => {
-    console.log('mmm checkhere pop', members_list)
-    if (!IsEmpty(members_list)) {
-      let checkhere = []
-      let packages_array = [...packages_list]
-      members_list.map((member) => {
 
-        checkhere = packages_array.map((pop) => {
-          console.log('mmm checkhere pop', pop)
-          if (pop.id == member.selected_package.package_id) {
-            pop.count = pop?.count ? pop?.count : 0 + 1
-          }else{
-            pop.count = pop?.count ? pop?.count : 0 
-          }
-          return { ...pop }
-        })
-        console.log('mmm checkhere packages', checkhere)
-      })
-     
-      let pikachu = checkhere.map((lllp) => {
-        
-        if (lllp.count > 0) {
-         
-          let persent = (lllp.count / (members_list.length)) * 100
-          lllp.displayvalue = Number((Math.round(persent * 100) / 100).toFixed(0));
-          lllp.value = Number((Math.round(persent * 100) / 100).toFixed(0));
-        } else {
-          lllp.displayvalue = 0
-          lllp.value = 0
-        }
-        return { ...lllp }
-      })
-      console.log('mmm pikachu',pikachu)
-      set_packages_graph_values(pikachu)
-    }
-  }, [members_list,packages_list])
+  const asyncFunction = async () => {
+    let mydata = await dispatch(ACTIONS.set_packages_graph_values(members_list, packages_list))
+    set_graph_values({
+      data: mydata,
+      max: 100,
+      recommended: 75,
+      title: 'name'
+    })
+  }//set_members_graph_values
+
+  const asyncFunction2 = async () => {
+    let mydata = await dispatch(ACTIONS.set_members_graph_values(members_list))
+    set_graph_values({
+      data: mydata,
+      max: 100,
+      recommended: 75,
+      title: 'title'
+    })
+  }//
+
+  // useEffect(() => {
+  //   if (!IsEmpty(members_list)) {
+  //     asyncFunction()
+  //   }
+  // }, [members_list, packages_list])
 
 
   // useEffect(() => {
   //   if (!IsEmpty(members_list)) {
-  //     let checkhere = []
-  //     let months_array = [..._months]
-  //     members_list.map((member) => {
-  //       member.monthly_distrubution.map((oop) => {
-  //         checkhere = months_array.map((pop) => {
-  //           if (pop.month == oop.month) {
-  //             pop.days_sch = pop.days_sch + oop.days_sch
-  //           }
-  //           return { ...pop }
-  //         })
-  //       })
-  //     })
-  //     console.log('ccc checkhere', checkhere)
-  //     let pikachu = checkhere.map((lllp) => {
-  //       lllp.title = moment(lllp.month, 'M').format('MMM')
-  //       if (lllp.days_sch > 0) {
-  //         let month__ = moment(lllp.month, "M").daysInMonth();
-  //         let persent = (lllp.days_sch / (members_list.length * parseInt(month__))) * 100
-  //         lllp.displayvalue = Number((Math.round(persent * 100) / 100).toFixed(0));
-  //         lllp.value = Number((Math.round(persent * 100) / 100).toFixed(0));
-  //       } else {
-  //         lllp.displayvalue = 0
-  //         lllp.value = 0
-  //       }
-  //       return { ...lllp }
-  //     })
-  //     set_months_data(pikachu)
+  //     asyncFunction2()
   //   }
   // }, [members_list])
 
@@ -139,7 +139,8 @@ const Profile = () => {
   })
 
   /**
-   *    let new_data=await calcAndReturn(_months,distr.month,distr.days_sch)
+   *    
+   let new_data=await calcAndReturn(_months,distr.month,distr.days_sch)
       console.log('ccc abe yede new_data', new_data);
       _months=await [...new_data]
    */
@@ -185,77 +186,39 @@ const Profile = () => {
     let reference = storage().ref(name);
     let task = reference.putFile(path);
     task.then(() => {
-
       ToastAndroid.show("Image uploaded successfully !", ToastAndroid.SHORT);
-
     }).catch((e) => {
-
       ToastAndroid.show("Something went wrong !", ToastAndroid.SHORT);
-
     });
   }
-
-  const aad = [
-    {
-      "date": "2022-11-28",
-      "value": 80,
-      "displayvalue": 80
-    },
-    {
-      "date": "2022-11-29",
-      "value": 75,
-      "displayvalue": 75
-    },
-    {
-      "date": "2022-11-30",
-      "value": 30,
-      "displayvalue": 30
-    },
-    {
-      "date": "2022-11-30",
-      "value": 100,
-      "displayvalue": 100
-    },
-  ]
-
-  useEffect(() => {
-    // var a = moment([2022, 0, 1]);
-    // var b = moment([2022, 0, 4]);
-    // let c=a.to(b) 
-
-    const start = new Date(2012, 0, 15);
-    const end = new Date(2012, 4, 23);
-    const range = moment43.range(start, end);
-    //console.log('ccc', range)
-  }, [])
-
+  console.log('log', graph_values);
   return (
     <View style={[styles.container, { backgroundColor: theme.Colors.COLOR_BACKGROUND }]}>
+      <View style={{ margin: 12 }}>
+        <SingleSelectionDropdown
+          queTitle={`Select Package`}
+          itemStyle={{ marginHorizaontal: 40 }}
+          data={_months3}
+          _dropdownValue={selected_package?.name ? selected_package?.name : ''}
+          set_dropdownValue={async (item) => {
+            set_selected_package(item)
+          }} />
+      </View>
+
       <View style={{ maxHeight: 600, width: '100%' }}>
 
-       {!IsEmpty(packages_graph_values) &&
+        {(!IsEmpty(graph_values.data) && graph_values.data.length > 0) &&
           <BarChart
-            graphdata={packages_graph_values}
+            key={graph_values.title}
+            graphdata={graph_values.data}
             graphHeight={300}
-            max={100}
-            recomended={75}
+            max={graph_values.max}
+            recomended={graph_values.recommended}
             isPersentage={true}
-            numColumns={packages_graph_values.length}
-            titleText={'name'}
+            numColumns={graph_values.data.length}
+            titleText={graph_values.title}
             maerginBetweenBars={'15%'}
           />}
-
-        {/* {!IsEmpty(_months_data) &&
-          <BarChart
-            graphdata={_months_data}
-            graphHeight={300}
-            max={100}
-            recomended={75}
-            isPersentage={true}
-            numColumns={_months_data.length}
-            titleText={'title'}
-            maerginBetweenBars={'15%'}
-          />} */}
       </View>
 
 

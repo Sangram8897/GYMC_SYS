@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Container, DatePicker, Header, Button, Input } from 'components'
 import { ColorThemeContext } from '../../../context/theme_context';
 import firestore from '@react-native-firebase/firestore';
-import AddItem from '../../demo screens/addItem';
 import SingleSelectionDropdown from '../../../components/single_selection_dropdown';
 import moment from 'moment';
 import { CommonActions } from '@react-navigation/native';
@@ -130,7 +129,7 @@ const SelectPackage = ({ navigation, route }) => {
         });
         navigation.dispatch(resetAction);
     }
-
+console.log('packages_list',packages_list)
     return (
         <Container >
             <Header

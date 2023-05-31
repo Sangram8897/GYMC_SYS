@@ -6,8 +6,8 @@ const Title = ({ activeColor, inActiveColor }) => {
     const Theme = useContext(ColorThemeContext).Colors;
     return (
         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}>
-            <Text style={[styles.textstyl1, { color: inActiveColor }]}>My Lea</Text>
-            <Text style={[styles.textstyl1, { color: activeColor }]}>rnings</Text>
+            <Text style={[styles.textstyl1, { color: inActiveColor }]}>GY</Text>
+            <Text style={[styles.textstyl1, { color: activeColor }]}>MC</Text>
             <Text style={styles.textstyl3}></Text>
         </View>
     )
@@ -18,7 +18,7 @@ export default Title
 const styles = StyleSheet.create({
     textstyl1: {
         fontFamily: 'Montserrat-ExtraBold',
-        fontSize: 21,
+        fontSize: 22,
         // fontStyle: 'italic',
         // color: Colors.COLOR_BLACK
 

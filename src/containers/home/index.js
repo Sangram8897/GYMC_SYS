@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { SafeAreaView, TouchableOpacity, Button, Image, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
+import { SafeAreaView, TouchableOpacity, Animated, Button, Image, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
 import { ColorThemeContext } from '../../context/theme_context';
 import data from '../test_data/list';
 import Themes from "../../style/AppThemeColors";
@@ -10,6 +10,8 @@ import { FloatingActionButton } from 'components'
 import moment from 'moment';
 import IsEmpty from '../../utils/IsEmpty';
 import { Container, DatePicker, Header } from 'components'
+import MemberList from './members/member_list';
+import RedDot from '../../components/RedDot';
 
 const Item = ({ item, title, mobile_number, deleteItem, onItemPress }) => {
   const theme = useContext(ColorThemeContext)
@@ -29,9 +31,9 @@ const Item = ({ item, title, mobile_number, deleteItem, onItemPress }) => {
     let months = Math.floor(numberOfDays % 365 / 30);
     let days = Math.floor(numberOfDays % 365 % 30);
 
-    let years_ = (!IsEmpty(years) && years>0) ? `${years}Y ` : '';
-    let months_ = (!IsEmpty(months) && months>0) ? `${months}M ` : '';
-    let days_ = (!IsEmpty(days) && days>0) ? `${days} Days` : '';
+    let years_ = (!IsEmpty(years) && years > 0) ? `${years}Y ` : '';
+    let months_ = (!IsEmpty(months) && months > 0) ? `${months}M ` : '';
+    let days_ = (!IsEmpty(days) && days > 0) ? `${days} Days` : '';
 
     let newDatesString = years_ + months_ + days_
 
@@ -90,6 +92,7 @@ const Item = ({ item, title, mobile_number, deleteItem, onItemPress }) => {
   )
 }
 
+export const HEADER_HEIGHT = Platform.OS == 'ios' ? 50 : 30 + StatusBar.currentHeight;
 const Homescreen = ({ navigation }) => {
 
   const theme = useContext(ColorThemeContext)
@@ -97,6 +100,14 @@ const Homescreen = ({ navigation }) => {
   const members_list = useSelector(state => state.MembersListReducer.members_list);
   const [selected_filter_index, set_selected_filter_index] = React.useState(0);
   const { Colors, ToggleTheme } = useContext(ColorThemeContext);
+
+  const scrollY = new Animated.Value(0);
+  const diffClampScrollY = new Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
+  const headerHeight = diffClampScrollY.interpolate({
+    inputRange: [0, HEADER_HEIGHT],
+    outputRange: [0, -HEADER_HEIGHT],
+    extrapolate: 'clamp',
+  });
 
   const renderItem = ({ item }) => (
     <Item item={item}
@@ -107,14 +118,14 @@ const Homescreen = ({ navigation }) => {
   );
 
   const getData = async () => {
-   
+
     // if (selected_filter_index == 0) {
     //   dispatch(ACTIONS.get_members_list())
     // } if (selected_filter_index == 1) {
     //   dispatch(ACTIONS.get_members_sortBy_active())
     // }
 
-    dispatch(ACTIONS.get_members_sortBy_active())
+    // dispatch(ACTIONS.get_members_sortBy_overdue())
     // let my=await 
     // console.log('munneshwar kuku',my)
   }
@@ -139,23 +150,10 @@ const Homescreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: Colors.COLOR_BACKGROUND }]}>
-      <Header
-                    showBackButton={false}
-                    onBackButtonPress={() => navigation.goBack()}
-                    showPlusButton={true}
-                    onPlusButtonPress={() => ToggleTheme()}
-                />
-      <ListFilter onSelect={(index) => set_selected_filter_index(index)} />
-      <FlatList
-        data={members_list}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-      />
-      <FloatingActionButton
-        buttonClor={Colors.COLOR_ACTIVE_RED}
-        onPress={() => navigation.navigate('AddItem')} />
-    </SafeAreaView>
+    <Container>
+      <ListFilter onSelect={getData} />
+      <MemberList navigation={navigation} />
+    </Container>
   );
 }
 
@@ -166,7 +164,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     // marginLeft:-46,
-    paddingVertical: 5, paddingHorizontal: 10, borderRadius: 6
+    paddingVertical: 3, paddingHorizontal: 10, borderRadius: 6
   },
   title: {
     fontSize: 16, fontFamily: 'Montserrat-Medium'
@@ -178,48 +176,70 @@ const styles = StyleSheet.create({
     fontSize: 14, fontWeight: '400', fontFamily: 'Montserrat-Regular'
   },
   filter_text: {
-    fontSize: 13, fontFamily: 'Montserrat-Medium', marginHorizontal: 4, padding: 4, borderWidth: 1, borderColor: 'skyblue', borderRadius: 5
+    fontSize: 13, fontFamily: 'Montserrat-Medium', marginHorizontal: 4, paddingVertical: 8, paddingHorizontal: 8, borderWidth: 1, borderColor: 'skyblue', borderRadius: 5
   },
 });
 
 export default Homescreen;
 
-const _filter_data = [
-  { id: 1, name: 'All', selected: true },
-  { id: 2, name: 'active', selected: false },
-  { id: 3, name: 'Dates overs', selected: false },
-  { id: 4, name: 'In active', selected: false }
-]
 
 const ListFilter = ({ onSelect }) => {
-  const [filter_data, set_filter_data] = React.useState(_filter_data);
+  const dispatch = useDispatch();
 
-  const onFilterSelected = (_index) => {
-    const array = [...filter_data];
-    array.map((item, placeindex) =>
-      placeindex === _index
-        ? item.selected = true
-        : item.selected = false
-    );
-    set_filter_data(array)
-    onSelect(_index)
-    console.log(array)
+  const [selected_filter_index, set_selected_filter_index] = React.useState(1);
+  const [filter_data, set_filter_data] = React.useState([]);
+  const filter_tab_data = useSelector(state => state.MembersFilter.member_filter_tab_data);
+
+  useEffect(() => {
+    dispatch(ACTIONS.get_members_overdue_count(filter_tab_data))
+  }, [])
+
+  useEffect(() => {
+    getData()
+  }, [selected_filter_index])
+
+  const getData = async () => {
+
+    if (selected_filter_index == 1) {
+      dispatch(ACTIONS.get_members_list())
+    }else if (selected_filter_index == 2) {
+      dispatch(ACTIONS.get_members_sortBy_active())
+    }else if (selected_filter_index == 3) {
+      await dispatch(ACTIONS.get_members_sortBy_overdue())
+    }else if(selected_filter_index == 4){
+      await dispatch(ACTIONS.get_members_sortBy_inactive())
+    }
+
+    
+    // set_filter(filter_data, 3, overdue_count)
+    // console.log('ool', overdue_count)
+    // let my=await 
+    // console.log('munneshwar kuku',my)
+  }
+
+
+  const onFilterSelected = async (id, index) => {
+    set_selected_filter_index(id)
+    await dispatch(ACTIONS.set_member_filter_tab_selection(filter_tab_data, id))
   }
 
   const renderItem = ({ item, index }) => {
-    return <TouchableOpacity key={item.id} onPress={() => onFilterSelected(index)}>
-      <Text style={[styles.filter_text, { backgroundColor: item.selected ? 'orange' : 'yellow' }]}>{item.name}</Text>
+    return <TouchableOpacity key={item.id} onPress={() => onFilterSelected(item.id, index)}>
+      {(item?.reddot && item?.count > 0) && <RedDot />}
+      <Text style={[styles.filter_text, { backgroundColor: item?.selected ? 'orange' : 'yellow' }]}>
+        {item.name} {item?.count && item?.count}</Text>
     </TouchableOpacity>
   }
-
+  console.log('munneshwar kuku1', filter_data)
+  console.log('munneshwar kuku2', filter_tab_data)
   return (
     <View style={{ flexDirection: 'row' }}>
       <FlatList
         style={{ margin: 8 }}
         horizontal={true}
-        data={filter_data}
+        data={filter_tab_data}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   )
